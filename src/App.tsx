@@ -1,4 +1,4 @@
-import React, { useState  } from 'react';
+import React, { useState, useEffect  } from 'react';
 
 import {
   FlatList,
@@ -20,39 +20,43 @@ function App(): React.JSX.Element {
   const [isCat, setIsCat] = useState<boolean>(false)
   const [gameWinner, setGameWinner] = useState<string>('')
   const [gameState, setGameState] = useState(new Array(9).fill('empty',0,9)) // llenar con 'empty' ,desde la posición 0, hasta la posición 9 sin incluirlo
+  const [catSound, setCatSound] = useState<Sound | null>(null);
+  const [dogSound, setDogSound] = useState<Sound | null>(null);
+  const [gameSound, setGameSound] = useState<Sound | null>(null);
+  const [globalSound, setGlobalSound] = useState<Sound | null>(null); 
 
-  // Cargar archivos de audio
-  const catSound = new Sound('cat.mp3', Sound.MAIN_BUNDLE, (error) => {
-    if (error) {
-      console.log('error al cargar cat.mp3', error);
-      return;
-    }
-   
-  });
+   useEffect(() => {
+    const loadSounds = async () => {
+      try {
+        const catSoundInstance = new Sound('cat.mp3', Sound.MAIN_BUNDLE);
+        await catSoundInstance.play();
+        const dogSoundInstance = new Sound('dog.mp3', Sound.MAIN_BUNDLE);
+        await dogSoundInstance.play();
+        const gameSoundInstance = new Sound('game.mp3', Sound.MAIN_BUNDLE);
+        await gameSoundInstance.play();
+        
+        setCatSound(catSoundInstance);
+        setDogSound(dogSoundInstance);
+        setGameSound(gameSoundInstance);
+      } catch (error) {
+        console.log('Error al cargar los sonidos', error);
+      }
+    };
 
-  const dogSound = new Sound('dog.mp3', Sound.MAIN_BUNDLE, (error) => {
-    if (error) {
-      console.log('error al cargar dog.mp3', error);
-      return;
-    }
-    
-  });
+    loadSounds();
+  }, []);
 
-  const gameSound = new Sound('game.mp3', Sound.MAIN_BUNDLE, (error) => {
-    if (error) {
-      console.log('error al cargar dog.mp3', error);
-      return;
-    }
-    
-  });
 
-  
+   useEffect(() => {
+    return () => {
+      catSound?.release();
+      dogSound?.release();
+      gameSound?.release();
+    };
+  }, [catSound, dogSound, gameSound]);
 
   const reloadGame = () => { 
-    if(globalSound){
-      globalSound.stop();
-      
-    }    
+   globalSound?.stop();    
     setIsCat(false)
     setGameWinner('')
     setGameState(new Array(9).fill('empty',0,9))
@@ -62,18 +66,18 @@ function App(): React.JSX.Element {
   const checkIsWinner = () => {
   
     //  checking  winner of the game
-   
+   globalSound?.stop();
     if (
       gameState[0] === gameState[1] &&
       gameState[0] === gameState[2] &&
       gameState[0] !== 'empty'
     ) {
       setGameWinner(`${gameState[0]} won the game! 🥳`);
-      if (gameState[0] === 'cat') {
-        globalSound = catSound;
+      if (gameState[0] === 'cat' && catSound) {        
+        setGlobalSound(catSound);
         catSound.play();
-      } else if (gameState[0] === 'dog') {
-        globalSound = dogSound;
+      } else if (gameState[0] === 'dog' && dogSound) {
+        setGlobalSound(dogSound);
         dogSound.play();
       }
     } else if (
@@ -82,11 +86,11 @@ function App(): React.JSX.Element {
       gameState[4] === gameState[5]
     ) {
       setGameWinner(`${gameState[3]} won the game! 🥳`);
-       if (gameState[3] === 'cat') {
-        globalSound = catSound;
+       if (gameState[3] === 'cat' && catSound) {
+        setGlobalSound(catSound);
         catSound.play();
-      } else if (gameState[3] === 'dog') {
-        globalSound = dogSound;
+      } else if (gameState[3] === 'dog' && dogSound) {
+        setGlobalSound(dogSound);
         dogSound.play();
       }
     } else if (
@@ -95,11 +99,11 @@ function App(): React.JSX.Element {
       gameState[7] === gameState[8]
     ) {
       setGameWinner(`${gameState[6]} won the game! 🥳`);
-       if (gameState[6] === 'cat') {
-       globalSound = catSound;
+       if (gameState[6] === 'cat' && catSound) {
+       setGlobalSound(catSound);
         catSound.play();
-      } else if (gameState[6] === 'dog') {
-        globalSound = dogSound;
+      } else if (gameState[6] === 'dog' && dogSound) {
+        setGlobalSound(dogSound);
         dogSound.play();
       }
     } else if (
@@ -108,11 +112,11 @@ function App(): React.JSX.Element {
       gameState[3] === gameState[6]
     ) {
       setGameWinner(`${gameState[0]} won the game! 🥳`);
- if (gameState[0] === 'cat') {
-        globalSound = catSound;
+ if (gameState[0] === 'cat' && catSound) {
+        setGlobalSound(catSound);
         catSound.play();
-      } else if (gameState[0] === 'dog') {
-        globalSound = dogSound;
+      } else if (gameState[0] === 'dog' && dogSound) {
+         setGlobalSound(dogSound);
         dogSound.play();
       }
     } else if (
@@ -121,11 +125,11 @@ function App(): React.JSX.Element {
       gameState[4] === gameState[7]
     ) {
       setGameWinner(`${gameState[1]} won the game! 🥳`);
-       if (gameState[1] === 'cat') {
-        globalSound = catSound;
+       if (gameState[1] === 'cat' && catSound) {
+        setGlobalSound(catSound);
         catSound.play();
-      } else if (gameState[1] === 'dog') {
-        globalSound = dogSound;
+      } else if (gameState[1] === 'dog' && dogSound) {
+        setGlobalSound(dogSound);
         dogSound.play();
       }
     } else if (
@@ -134,11 +138,11 @@ function App(): React.JSX.Element {
       gameState[5] === gameState[8]
     ) {
       setGameWinner(`${gameState[2]} won the game! 🥳`);
-       if (gameState[2] === 'cat') {
-        globalSound = catSound;
+       if (gameState[2] === 'cat' && catSound) {
+        setGlobalSound(catSound);
         catSound.play();
-      } else if (gameState[2] === 'dog') {
-        globalSound = dogSound;
+      } else if (gameState[2] === 'dog' && dogSound) {
+        setGlobalSound(dogSound);
         dogSound.play();
       }
     } else if (
@@ -147,11 +151,11 @@ function App(): React.JSX.Element {
       gameState[4] === gameState[8]
     ) {
       setGameWinner(`${gameState[0]} won the game! 🥳`);
-       if (gameState[0] === 'cat') {
-        globalSound = catSound;
+       if (gameState[0] === 'cat' && catSound) {
+        setGlobalSound(catSound);
         catSound.play();
-      } else if (gameState[0] === 'dog') {
-       globalSound = dogSound;
+      } else if (gameState[0] === 'dog' && dogSound) {
+       setGlobalSound(dogSound);
         dogSound.play();
       }
     } else if (
@@ -160,11 +164,11 @@ function App(): React.JSX.Element {
       gameState[4] === gameState[6]
     ) {
       setGameWinner(`${gameState[2]} won the game! 🥳`);
- if (gameState[2] === 'cat') {
-        globalSound = catSound;
+ if (gameState[2] === 'cat' && catSound) {
+        setGlobalSound(catSound);
         catSound.play();
-      } else if (gameState[2] === 'dog') {
-        globalSound = dogSound;
+      } else if (gameState[2] === 'dog' && dogSound) {
+        setGlobalSound(dogSound);
         dogSound.play();
       }
     } else if (!gameState.includes('empty', 0)) { // para comenzar la busqueda desde el indice 0
@@ -174,24 +178,25 @@ function App(): React.JSX.Element {
   }
 
   const onChangeItem = (itemNumber: number) => {
-   globalSound = gameSound;
-   gameSound.play();
+   globalSound?.stop();
+   setGlobalSound(gameSound);
+   gameSound?.play();
     if(gameWinner){ 
       
-      if (
+      if ((
   gameState[0] === 'cat' || gameState[1] === 'cat' || gameState[2] === 'cat' ||
   gameState[3] === 'cat' || gameState[4] === 'cat' || gameState[5] === 'cat' ||
-  gameState[6] === 'cat' || gameState[7] === 'cat' || gameState[8] === 'cat'
+  gameState[6] === 'cat' || gameState[7] === 'cat' || gameState[8] === 'cat') && catSound
 ) {
-  globalSound = catSound;
-  catSound.play(); 
-} else if (
+    setGlobalSound(catSound);
+    catSound.play();
+} else if ((
   gameState[0] === 'dog' || gameState[1] === 'dog' || gameState[2] === 'dog' ||
   gameState[3] === 'dog' || gameState[4] === 'dog' || gameState[5] === 'dog' ||
-  gameState[6] === 'dog' || gameState[7] === 'dog' || gameState[8] === 'dog'
+  gameState[6] === 'dog' || gameState[7] === 'dog' || gameState[8] === 'dog') && dogSound
 ) {
-  globalSound = dogSound;
-  dogSound.play(); 
+    setGlobalSound(dogSound);
+    dogSound.play();
 }
 
 
