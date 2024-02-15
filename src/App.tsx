@@ -27,6 +27,7 @@ function App(): React.JSX.Element {
       console.log('error al cargar cat.mp3', error);
       return;
     }
+   
   });
 
   const dogSound = new Sound('dog.mp3', Sound.MAIN_BUNDLE, (error) => {
@@ -34,6 +35,7 @@ function App(): React.JSX.Element {
       console.log('error al cargar dog.mp3', error);
       return;
     }
+    
   });
 
   const gameSound = new Sound('game.mp3', Sound.MAIN_BUNDLE, (error) => {
@@ -41,16 +43,16 @@ function App(): React.JSX.Element {
       console.log('error al cargar dog.mp3', error);
       return;
     }
+    
   });
 
   
 
-  const reloadGame = () => {
-    if (globalSound)
-     globalSound.stop();
-     
-    
-     
+  const reloadGame = () => { 
+    if(globalSound){
+      globalSound.stop();
+      
+    }    
     setIsCat(false)
     setGameWinner('')
     setGameState(new Array(9).fill('empty',0,9))
@@ -58,8 +60,7 @@ function App(): React.JSX.Element {
   }
 
   const checkIsWinner = () => {
-    globalSound = gameSound;
-    globalSound.play();
+  
     //  checking  winner of the game
    
     if (
@@ -69,13 +70,9 @@ function App(): React.JSX.Element {
     ) {
       setGameWinner(`${gameState[0]} won the game! 🥳`);
       if (gameState[0] === 'cat') {
-        if(globalSound)
-        globalSound.stop();
         globalSound = catSound;
         catSound.play();
       } else if (gameState[0] === 'dog') {
-        if(globalSound)
-        globalSound.stop();
         globalSound = dogSound;
         dogSound.play();
       }
@@ -86,13 +83,9 @@ function App(): React.JSX.Element {
     ) {
       setGameWinner(`${gameState[3]} won the game! 🥳`);
        if (gameState[3] === 'cat') {
-        if(globalSound)
-        globalSound.stop();
         globalSound = catSound;
         catSound.play();
       } else if (gameState[3] === 'dog') {
-        if(globalSound)
-        globalSound.stop();
         globalSound = dogSound;
         dogSound.play();
       }
@@ -103,13 +96,9 @@ function App(): React.JSX.Element {
     ) {
       setGameWinner(`${gameState[6]} won the game! 🥳`);
        if (gameState[6] === 'cat') {
-        if(globalSound)
-        globalSound.stop();
-        globalSound = catSound;
+       globalSound = catSound;
         catSound.play();
       } else if (gameState[6] === 'dog') {
-        if(globalSound)
-        globalSound.stop();
         globalSound = dogSound;
         dogSound.play();
       }
@@ -120,13 +109,9 @@ function App(): React.JSX.Element {
     ) {
       setGameWinner(`${gameState[0]} won the game! 🥳`);
  if (gameState[0] === 'cat') {
-        if(globalSound)
-        globalSound.stop();
         globalSound = catSound;
         catSound.play();
       } else if (gameState[0] === 'dog') {
-        if(globalSound)
-        globalSound.stop();
         globalSound = dogSound;
         dogSound.play();
       }
@@ -137,13 +122,9 @@ function App(): React.JSX.Element {
     ) {
       setGameWinner(`${gameState[1]} won the game! 🥳`);
        if (gameState[1] === 'cat') {
-        if(globalSound)
-        globalSound.stop();
         globalSound = catSound;
         catSound.play();
       } else if (gameState[1] === 'dog') {
-        if(globalSound)
-        globalSound.stop();
         globalSound = dogSound;
         dogSound.play();
       }
@@ -154,13 +135,9 @@ function App(): React.JSX.Element {
     ) {
       setGameWinner(`${gameState[2]} won the game! 🥳`);
        if (gameState[2] === 'cat') {
-        if(globalSound)
-        globalSound.stop();
         globalSound = catSound;
         catSound.play();
       } else if (gameState[2] === 'dog') {
-        if(globalSound)
-        globalSound.stop();
         globalSound = dogSound;
         dogSound.play();
       }
@@ -171,14 +148,10 @@ function App(): React.JSX.Element {
     ) {
       setGameWinner(`${gameState[0]} won the game! 🥳`);
        if (gameState[0] === 'cat') {
-        if(globalSound)
-        globalSound.stop();
         globalSound = catSound;
         catSound.play();
       } else if (gameState[0] === 'dog') {
-        if(globalSound)
-        globalSound.stop();
-        globalSound = dogSound;
+       globalSound = dogSound;
         dogSound.play();
       }
     } else if (
@@ -188,13 +161,9 @@ function App(): React.JSX.Element {
     ) {
       setGameWinner(`${gameState[2]} won the game! 🥳`);
  if (gameState[2] === 'cat') {
-        if(globalSound)
-        globalSound.stop();
         globalSound = catSound;
         catSound.play();
       } else if (gameState[2] === 'dog') {
-        if(globalSound)
-        globalSound.stop();
         globalSound = dogSound;
         dogSound.play();
       }
@@ -205,13 +174,27 @@ function App(): React.JSX.Element {
   }
 
   const onChangeItem = (itemNumber: number) => {
-    if(globalSound){
-      globalSound.stop();
-      globalSound = gameSound;
-      gameSound.play();
-    }
+   globalSound = gameSound;
+   gameSound.play();
     if(gameWinner){ 
       
+      if (
+  gameState[0] === 'cat' || gameState[1] === 'cat' || gameState[2] === 'cat' ||
+  gameState[3] === 'cat' || gameState[4] === 'cat' || gameState[5] === 'cat' ||
+  gameState[6] === 'cat' || gameState[7] === 'cat' || gameState[8] === 'cat'
+) {
+  globalSound = catSound;
+  catSound.play(); 
+} else if (
+  gameState[0] === 'dog' || gameState[1] === 'dog' || gameState[2] === 'dog' ||
+  gameState[3] === 'dog' || gameState[4] === 'dog' || gameState[5] === 'dog' ||
+  gameState[6] === 'dog' || gameState[7] === 'dog' || gameState[8] === 'dog'
+) {
+  globalSound = dogSound;
+  dogSound.play(); 
+}
+
+
       return Snackbar.show({
         text: gameWinner,
         backgroundColor: '#000000',
@@ -224,6 +207,7 @@ function App(): React.JSX.Element {
     if(gameState[itemNumber]=== 'empty'){
       gameState[itemNumber] = isCat ? 'cat' : 'dog'
       setIsCat(!isCat)
+            
     } else {
       Snackbar.show({
         text: "Position is already filled",
